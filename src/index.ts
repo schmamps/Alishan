@@ -43,7 +43,7 @@ const doSummary = (
 export const summarize = (
 	title: string,
 	text: string,
-	opts: SummaryOptions
+	opts: SummaryOptions = {}
 ): string[] => {
 	return (text.trim().length) ? doSummary(title, text, opts) : []
 }
