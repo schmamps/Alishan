@@ -1,0 +1,113 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: initial;
+}
+
+body {
+  font-family: Helvetica, Arial, sans-serif;
+  background: #FFF5EE;
+  color: #403D3B;
+}
+
+main {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+section {
+  margin: 0 2vw 1vw 0;
+  max-width: 30rem;
+  border-radius: 0.5rem;
+  padding: 0 0.5rem 0.5rem 0.5rem;
+}
+section.input {
+  min-width: 16rem;
+  flex: 1;
+  color: #403D3B;
+  background: #BFB7B2;
+}
+section.input h2 {
+  background: #403D3B;
+  color: #BFB7B2;
+}
+section.output {
+  flex: 2;
+  background: #403D3B;
+  color: #BFB7B2;
+}
+section.output h2 {
+  background: #BFB7B2;
+  color: #403D3B;
+}
+section div {
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
+  margin-top: 0.5rem;
+}
+
+h2 {
+  font-size: 1.2em;
+  float: right;
+  margin: 0 0.25rem 0 0;
+  padding: 0.25rem;
+  width: 6rem;
+  text-align: center;
+  border-bottom-left-radius: 0.25rem;
+  border-bottom-right-radius: 0.25rem;
+}
+
+label {
+  background: Seashell;
+  border: 1px solid #403D3B;
+  display: block;
+  margin-top: 0.25rem;
+  padding: 0.25rem;
+  font-size: 0.9rem;
+}
+label.title {
+  height: 3rem;
+}
+label.title input {
+  float: left;
+}
+
+span, input, textarea {
+  display: block;
+  background: none;
+}
+
+span, input.full, textarea {
+  width: 100%;
+}
+
+input, textarea {
+  border: 0;
+  outline: none;
+}
+input:focus, textarea:focus {
+  box-shadow: 0 2px #82AEB3;
+}
+
+textarea {
+  height: 10rem;
+  resize: vertical;
+}
+
+button {
+  min-width: 8em;
+}
+
+@media only screen and (max-width: 36rem) {
+  #body section {
+    margin: 0 0 1vw 0;
+    min-width: 90vw;
+  }
+}
+
+/*# sourceMappingURL=example.css.map */

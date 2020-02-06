@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Example</title>
+	<script src="../alishan/index.js" defer></script>
+	<script type="module" src="./example.js"></script>
+	<link rel="stylesheet" href="./example.css">
+</head>
+<body id="body">
+	<header>
+		<h1>Demonstration</h1>
+	</header>
+	<main>
+		<section class="input">
+			<h2>Input</h2>
+			<label class="title">
+				<span>Title</span>
+				<input type="text" id="title" class="full">
+			</label>
+			<label>
+				<span>Full Text</span>
+				<textarea id="content"></textarea>
+			</label>
+			<label>
+				<span>Sentences</span>
+				<input
+					type="number"
+					id="returnCount"
+					min="1"
+					max="9999999"
+					value="3"
+				></label>
+			<div><button id="summarize">Summarize</button></div>
+		</section>
+		<section class="output">
+			<h2>Output</h2>
+			<ol id="summary-sentences"></ul>
+		</section>
+	</main>
+</body>
+</html>

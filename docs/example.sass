@@ -1,0 +1,109 @@
+$key-75: #BFB7B2
+$key-50: #807A77
+$key-100: #FFF5EE
+$key-25: #403D3B
+$key-90: #E6DCD5
+$key-hl: #82AEB3
+
+$section-vert: .5rem
+
+*
+	box-sizing: border-box
+
+html
+	font-size: initial
+
+body
+	font-family: Helvetica,Arial,sans-serif
+	background: $key-100
+	color: $key-25
+
+main
+	display: flex
+	flex-direction: row
+	flex-wrap: wrap
+	align-items: flex-start
+
+section
+	margin: 0 2vw 1vw 0
+	max-width: 30rem
+	border-radius: .5rem
+	padding: 0 .5rem $section-vert .5rem
+
+	&.input
+		min-width: 16rem
+		flex: 1
+		color: $key-25
+		background: $key-75
+
+		h2
+			background: $key-25
+			color: $key-75
+
+	&.output
+		flex: 2
+		background: $key-25
+		color: $key-75
+
+		h2
+			background: $key-75
+			color: $key-25
+
+	div
+		display: flex
+		align-items: flex-end
+		flex-direction: column
+		margin-top: $section-vert
+
+$h2-key: .25rem
+
+h2
+	font-size: 1.2em
+	float: right
+	margin: 0 $h2-key 0 0
+	padding: $h2-key
+	width: 6rem
+	text-align: center
+	border-bottom-left-radius: $h2-key
+	border-bottom-right-radius: $h2-key
+
+label
+	background: Seashell
+	border: 1px solid $key-25
+	display: block
+	margin-top: .25rem
+	padding: .25rem
+	font-size: .9rem
+
+	&.title
+		height: 3rem
+
+		input
+			float: left
+
+span, input, textarea
+	display: block
+	background: none
+
+span, input.full, textarea
+	width: 100%
+
+input, textarea
+	border: 0
+	outline: none
+
+	&:focus
+		box-shadow: 0 2px $key-hl
+
+textarea
+	height: 10rem
+	resize: vertical
+
+button
+	min-width: 8em
+
+
+@media only screen and (max-width: 36rem)
+	#body section
+		margin: 0 0 1vw 0
+		min-width: 90vw
