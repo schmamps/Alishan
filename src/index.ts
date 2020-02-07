@@ -4,14 +4,34 @@ import {SummaryOptions} from 'Typing'
 
 
 /**
- * Sort descending per `Array.prototype.sort()`
- * @param a {ScoredSentence}
- * @param b {ScoredSentence}
+ * @param scored - scored sentences
+ * @param returnCount - minimum qualify rank for summary
  */
-const sortSentences = (
-	a: ScoredSentence,
-	b: ScoredSentence
-): number => b.score.total - a.score.total
+const getSummaryThreshold = (
+	scored: ScoredSentence[],
+	returnCount: number
+): number => {
+	if (scored.length < 1) { return -Infinity }
+
+	const scores = scored.
+		map((sent) => sent.score.total).
+		sort((a, b) => b - a)
+
+	return scores[Math.max(returnCount, scores.length) - 1]
+}
+
+/**
+* @param {string} title - content title
+* @param {string} body - content body
+* @param {SummaryOptions} options
+*/
+const scoreSentences = (
+   title: string,
+   body: string,
+   options: SummaryOptions
+): ScoredSentence[] => {
+	return scoreContent(title, body, options)
+}
 
 /**
  * Summarize `text`
@@ -24,14 +44,14 @@ const doSummary = (
 	body: string,
 	options: SummaryOptions,
 ): string[] => {
-	const {returnCount = 5,} = options
+	const {returnCount = 5} = options
+	const scored = scoreSentences(title, body, options)
+	const threshold = getSummaryThreshold(scored, returnCount)
 
-	const summarized = scoreContent(title, body, options).
-		sort(sortSentences).
-		slice(0, returnCount).
+	return scored.
+		filter((sent) => sent.score.total >= threshold).
+		sort((a, b) => a.position - b.position).
 		map(String)
-
-	return summarized
 }
 
 /**
