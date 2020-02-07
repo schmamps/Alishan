@@ -4,6 +4,21 @@ import {SummaryOptions} from 'Typing'
 
 
 /**
+ * List and score all sentences in `body`
+* @param {string} title - content title
+* @param {string} body - content body
+* @param {SummaryOptions} options
+*/
+const scoreSentences = (
+   title: string,
+   body: string,
+   options: SummaryOptions
+): ScoredSentence[] => {
+	return scoreContent(title, body, options)
+}
+
+/**
+ * Get minimum score among `scored` to qualify for summary
  * @param scored - scored sentences
  * @param returnCount - minimum qualify rank for summary
  */
@@ -18,19 +33,6 @@ const getSummaryThreshold = (
 		sort((a, b) => b - a)
 
 	return scores[Math.max(returnCount, scores.length) - 1]
-}
-
-/**
-* @param {string} title - content title
-* @param {string} body - content body
-* @param {SummaryOptions} options
-*/
-const scoreSentences = (
-   title: string,
-   body: string,
-   options: SummaryOptions
-): ScoredSentence[] => {
-	return scoreContent(title, body, options)
 }
 
 /**
