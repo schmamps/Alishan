@@ -51,13 +51,12 @@ const testDocSentences = (
 	const memo = {keys,}
 
 	doc.sentences.forEach((sent, sentIdx) => {
-		const text = sent.stemmed.join(' ')
 		const expected = doc.sentences[sentIdx].score
 
 		test(`${title.text} (${sentCount})[${sentIdx}]`, () => {
 			const actual = score.sentence(
 				title.text,
-				text,
+				sent.text,
 				sentIdx,
 				sentCount,
 				{},
