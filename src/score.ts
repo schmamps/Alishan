@@ -278,7 +278,9 @@ const scoreSentence = (
 	opts: ScoringOptions = {},
 	memo: ScoringMemo = {},
 ): SentenceScore => {
-	const sentenceWords = tokenize.words(text)
+	const sentenceWords = tokenize.
+		words(text).
+		map(porter.stem)
 	const {
 		idealLength = IDEAL_LENGTH,
 		stopWords = stopper.defaults,
