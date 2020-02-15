@@ -1,12 +1,13 @@
+import { SentenceScore, KeywordTuple } from 'Typing'
 import {MINIMUM_RANK as KW_LIMIT} from '../src/keywords'
 import * as score from '../src/score'
+import { SampleDocument, SampleSentenceScore } from './util/document'
 import * as jzn from './util/jzn'
-import { SentenceScore, KeywordTuple } from 'Typing'
 
 
 const compareSentence = (
 	actual: SentenceScore,
-	expected: jzn.TestDocumentSentenceScore
+	expected: SampleSentenceScore,
 ) => {
 	const fix = (val: number): number => Math.round(val * score.PRECISION);
 
@@ -31,7 +32,7 @@ const compareSentence = (
 }
 
 const testDocSentences = (
-	doc: jzn.TestDocument
+	doc: SampleDocument
 ) => {
 	const limitIdx = Math.min(KW_LIMIT, doc.keywords.length) - 1
 	const threshold = doc.
@@ -75,5 +76,5 @@ const testDocSentences = (
 // sentence
 jzn.
 	locate('cambodia', 'cameroon', 'canada', 'essay_snark').
-	map(jzn.load).
+	map((path) => new SampleDocument(path)).
 	forEach(testDocSentences)
