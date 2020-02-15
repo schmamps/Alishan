@@ -1,13 +1,8 @@
 import {Keyword} from './Keyword'
 import {KeywordTuple} from 'Typing'
-import STOP_WORDS from '../stop-words'
 import * as tokenize from '../tokenize'
+import DEFAULTS from './defaults'
 
-
-export const DEFAULTS = {
-	minimumRank: 10,
-	stopWords: STOP_WORDS,
-}
 
 interface KeywordOptions {
 	minimumRank?: number,
