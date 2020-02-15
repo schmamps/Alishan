@@ -1,4 +1,5 @@
 import * as tokenize from '../src/tokenize'
+import { SampleDocument } from './util/document'
 import * as jzn from './util/jzn'
 
 
@@ -15,7 +16,7 @@ const testNormalize = (
 }
 
 const testSentences = (
-	doc: jzn.TestDocument,
+	doc: SampleDocument,
 ) => {
 	const expected = doc.sentences.map((sent) => sent.text)
 	const body = expected.join(' ')
@@ -27,7 +28,7 @@ const testSentences = (
 }
 
 const testWords = (
-	doc: jzn.TestDocument,
+	doc: SampleDocument,
 ) => {
 	const sentTexts = doc.sentences.map((sent) => sent.text)
 	const sentWords = doc.sentences.map((sent) => sent.words)
@@ -48,11 +49,11 @@ const testWords = (
 // tokenize sentences
 jzn.
 	locate(SAMPLES).
-	map(jzn.load).
+	map((path) => new SampleDocument(path)).
 	forEach(testSentences)
 
 // tokenize words
 jzn.
 	locate(SAMPLES).
-	map(jzn.load).
+	map((path) => new SampleDocument(path)).
 	forEach(testWords)
