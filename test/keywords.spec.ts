@@ -1,11 +1,23 @@
-import {PRECISION, Keyword} from '../src/Keyword';
-import * as keywords from '../src/keywords';
-import * as jzn from './util/jzn';
+import { PRECISION, Keyword } from '../src/Keyword'
+import * as keywords from '../src/keywords'
+import { SampleDocument, SampleDocumentKeyword } from './util/document'
+import * as jzn from './util/jzn'
 
+
+const loadStopWords = (): string[] => {
+	const list = jzn.
+		locate('stop-words').
+		map(jzn.load).
+		shift()
+
+	return Object.
+		assign({words: []}, list).
+		words
+}
 
 const compareScore = (
 	actual: Keyword,
-	expected: jzn.TestDocumentKeyword,
+	expected: SampleDocumentKeyword,
 ): boolean => {
 	const [a, b] = [actual, expected].
 		map((kw) => Math.round(kw.score * PRECISION));
@@ -15,7 +27,7 @@ const compareScore = (
 
 const compareKeywordList = (
 	actual: Keyword[],
-	expected: jzn.TestDocumentKeyword[]
+	expected: SampleDocumentKeyword[]
 ): boolean => {
 	if (actual.length > expected.length) {
 		throw [
@@ -45,7 +57,7 @@ const compareKeywordList = (
 };
 
 const testList = (
-	doc: jzn.TestDocument
+	doc: SampleDocument
 ) => {
 	const compare = () => {
 		let init: string[] = []
@@ -53,10 +65,7 @@ const testList = (
 			sentences.
 			reduce((kws, sent) => kws.concat(sent.keywords), init).
 			join(' ')
-		const path = jzn.locate('stop-words')[0]
-		// @ts-ignore
-		const stopWords: string[] = jzn.load(path).words
-		const actual = keywords.list(body, {stopWords})
+		const actual = keywords.list(body, {stopWords: loadStopWords()})
 		const expected = doc.keywords;
 
 		return compareKeywordList(actual, expected)
@@ -69,5 +78,5 @@ const testList = (
 
 jzn.
 	locate('cambodia', 'cameroon', 'canada', 'essay_snark').
-	map(jzn.load).
+	map((path) => new SampleDocument(path)).
 	forEach(testList);
