@@ -1,4 +1,6 @@
-const stopWords = [
+export const minimumRank = 10
+
+export const stopWords = [
 	// misc
 	'-', ' ', ',', '.',
 	'a', 'e', 'i', 'o', 'u', 't',
@@ -68,8 +70,3 @@ const stopWords = [
 	'will', 'with', 'within', 'without', 'would',
 	'yet', 'you', 'your', 'yours', 'yourself', 'yourselves',
 ]
-
-export default {
-	minimumRank: 10,
-	stopWords
-}

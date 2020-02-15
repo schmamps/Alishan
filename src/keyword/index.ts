@@ -1,7 +1,7 @@
 import {Keyword} from './Keyword'
 import {KeywordTuple} from 'Typing'
 import * as tokenize from '../tokenize'
-import DEFAULTS from './defaults'
+import * as DEFAULTS from './defaults'
 
 
 interface KeywordOptions {
