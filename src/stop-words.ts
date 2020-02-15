@@ -1,4 +1,4 @@
-const defaultStopWords = [
+export default [
 	// misc
 	'-', ' ', ',', '.',
 	'a', 'e', 'i', 'o', 'u', 't',
@@ -68,18 +68,3 @@ const defaultStopWords = [
 	'will', 'with', 'within', 'without', 'would',
 	'yet', 'you', 'your', 'yours', 'yourself', 'yourselves',
 ]
-
-/**
- * Create filter function for stopWords
-**/
-const createWordFilter = (
-	stopWords?: string[] | null
-) => {
-	const searchArray = stopWords || defaultStopWords
-	const filter = (word: string): boolean => !searchArray.includes(word)
-
-	return filter
-}
-
-export const defaults = defaultStopWords
-export const createFilter = createWordFilter

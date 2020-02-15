@@ -1,15 +1,28 @@
 import {Keyword} from './Keyword'
 import {KeywordTuple} from 'Typing'
-import * as stopper from './stop-words'
-import * as tokenize from './tokenize'
+import STOP_WORDS from '../stop-words'
+import * as tokenize from '../tokenize'
 
 
-export const MINIMUM_RANK = 10
+export const DEFAULTS = {
+	minimumRank: 10,
+	stopWords: STOP_WORDS,
+}
 
 interface KeywordOptions {
 	minimumRank?: number,
 	stopWords?: string[],
 }
+
+/**
+ * Create word filter function
+ * @param stopWords - scope for filter `(arg) => !stopWords.includes(arg)`
+ */
+const createWordFilter = (
+	stopWords: string[],
+) => (
+	word: string,
+): boolean => !stopWords.includes(word)
 
 /**
  * Increment instance count of  `word` in `counted`
@@ -34,9 +47,10 @@ const countWord = (
  */
 const countKeywords = (
 	allWords: string[],
-	stopWords?: string[],
+	stopWords: string[],
 ): [string, number][] => {
-	const byStopWords = stopper.createFilter(stopWords)
+	const byStopWords = createWordFilter(stopWords)
+
 	const counted = allWords.
 		filter(byStopWords).
 		reduce(countWord, new Map()).
@@ -65,15 +79,18 @@ const getKeywordThreshold = (
 
 /**
  * List keywords in `text`
- * @param {string} text
+ * @param {string} body
  * @param {KeywordOptions} - {count: # of returned keywords, stopWords}
 **/
 const listKeywords = (
-	text: string,
+	body: string,
 	opts: KeywordOptions = {},
 ): Keyword[] => {
-	const {minimumRank: minRank = MINIMUM_RANK, stopWords} = opts
-	const allWords = tokenize.words(text)
+	const {
+		minimumRank: minRank = DEFAULTS.minimumRank,
+		stopWords = DEFAULTS.stopWords
+	} = opts
+	const allWords = tokenize.words(body)
 	const keywords =
 		countKeywords(allWords, stopWords).
 		map((pair: [string, number]) => ({word: pair[0], freq: pair[1]})).
@@ -85,14 +102,14 @@ const listKeywords = (
 
 /**
  * List keywords in `text`, except tupled
- * @param {string} text
+ * @param {string} body
  * @param {KeywordOptions} - {count: # of returned keywords, stopWords}
  */
 const listKeywordsTuple = (
-	text: string,
+	body: string,
 	opts: KeywordOptions = {},
 ): KeywordTuple => {
-	const list = listKeywords(text, opts)
+	const list = listKeywords(body, opts)
 
 	return [
 		list.map((kw) => kw.word),
@@ -100,5 +117,6 @@ const listKeywordsTuple = (
 	]
 }
 
+export const createFilter = createWordFilter
 export const list = listKeywords
 export const listTuple = listKeywordsTuple
