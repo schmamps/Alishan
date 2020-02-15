@@ -6,55 +6,6 @@ export interface JZNOptions {
 	ext: string,
 }
 
-export interface TestDocumentMeta {
-	description: string,
-	license: boolean,
-	source: string,
-}
-
-export interface TestDocumentTitle {
-	text: string,
-	words: string[],
-	filtered: string[],
-	keywords: string[],
-}
-
-export interface TestDocumentKeyword {
-	stem: string,
-	count: number,
-	score: number,
-}
-
-export interface TestDocumentSentenceScore {
-	title: number,
-	length: number,
-	dbs: number,
-	sbs: number,
-	position: number,
-	keyword: number,
-	total: number,
-}
-
-export interface TestDocumentSentence {
-	index: number,
-	of?: number,
-	rank: number,
-	score: TestDocumentSentenceScore,
-	text: string,
-	words: string[],
-	filtered: string[],
-	stemmed: string[],
-	keywords: string[],
-}
-
-export interface TestDocument {
-	meta: TestDocumentMeta,
-	idiom: boolean,
-	title: TestDocumentTitle,
-	keywords: TestDocumentKeyword[],
-	sentences: TestDocumentSentence[],
-}
-
 /**
  * Read and parse JSON at `path`
  * @param {string} path - path to JSON
@@ -62,7 +13,7 @@ export interface TestDocument {
  */
 export const load = (
 	path: string,
-): TestDocument => {
+): object => {
 	// @ts-ignore
 	return [fs.readFileSync, JSON.parse].
 		reduce((val, func) => func(val), path)
