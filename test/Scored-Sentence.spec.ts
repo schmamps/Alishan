@@ -1,4 +1,5 @@
-import {ScoredSentence} from '../src/Scored-Sentence'
+import { ScoredSentence } from '../src/Scored-Sentence'
+import { SampleDocument, SampleSentence } from './util/document'
 import * as jzn from './util/jzn'
 
 
@@ -10,7 +11,7 @@ import * as jzn from './util/jzn'
  */
 const compare = (
 	actual: ScoredSentence,
-	expected: jzn.TestDocumentSentence,
+	expected: SampleSentence,
 ): boolean => {
 	const text = actual._text === expected.text
 	const of = actual._of === expected.of
@@ -25,7 +26,7 @@ const compare = (
  * @returns {function}
  */
 const testSentence = (
-	expected: jzn.TestDocumentSentence,
+	expected: SampleSentence,
 	passes: boolean,
 	docTitle: string,
 ) => {
@@ -48,7 +49,7 @@ const testSentence = (
 	})
 };
 
-const testDocument = (doc: jzn.TestDocument) => {
+const testSample = (doc: SampleDocument) => {
 	const title = doc.title.text
 	const valid = doc.sentences
 
@@ -65,5 +66,5 @@ const testDocument = (doc: jzn.TestDocument) => {
 
 jzn.
 	locate('cambodia', 'cameroon', 'canada').
-	map(jzn.load).
-	forEach(testDocument)
+	map((path) => new SampleDocument(path)).
+	forEach(testSample)
