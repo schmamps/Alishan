@@ -1,9 +1,9 @@
-import * as tokenize from '../src/tokenize'
-import { SampleDocument } from './util/document'
-import * as jzn from './util/jzn'
+import * as tokenize from '../../src/tokenize'
+import { SampleDocument } from '../document'
 
 
-const SAMPLES = ['cambodia', 'cameroon', 'canada']
+const SAMPLES = ['cambodia', 'cameroon', 'canada'].
+	map((name) => new SampleDocument(name))
 
 const testNormalize = (
 	strPairs: string[],
@@ -47,13 +47,7 @@ const testWords = (
 ].forEach(testNormalize)
 
 // tokenize sentences
-jzn.
-	locate(SAMPLES).
-	map((path) => new SampleDocument(path)).
-	forEach(testSentences)
+SAMPLES.forEach(testSentences)
 
 // tokenize words
-jzn.
-	locate(SAMPLES).
-	map((path) => new SampleDocument(path)).
-	forEach(testWords)
+SAMPLES.forEach(testWords)
