@@ -1,11 +1,11 @@
-import * as porter from '../src/porter/';
-import * as jzn from './util/jzn';
+import * as porter from '../../src/porter/';
+import * as jzn from '../jzn';
 
 
 // of 23K+ samples, test only the most heavily stemmed
-const USE_SHORT = true
+const ABBREVIATE = true
 
-const SHORT: [string, string][] = [
+const HEAVY_STEMS: [string, string][] = [
 	['impossibilities', 'imposs'  ], ['fortifications',  'fortif'  ],
 	['bashfulness',     'bash'    ], ['communication',   'commun'  ],
 	['covetousness',    'covet'   ], ['deliciousness',   'delici'  ],
@@ -37,21 +37,22 @@ const SHORT: [string, string][] = [
 const testStemTuple = (stemTuple: string[]) => {
 	const [input, expected] = stemTuple
 
-	test(`stem('${input}') === '${expected}'`, () => {
-		expect(porter.stem(input)).toEqual(expected)
-	})
+	test(
+		`stem('${input}') === '${expected}'`,
+		() => {
+			expect(porter.stem(input)).toEqual(expected)
+		},
+		1
+	)
 }
 
 const listStems = (): [string, string][] => {
-	if (USE_SHORT) { return SHORT }
+	const dummy = {stems: []}
+	const path = jzn.locate('stems')
+	const list =  jzn.load(path)
 
-	const list =  jzn.
-		locate('stems').
-		map(jzn.load)
-
-	return Object.
-		assign({stems: []}, list).
-		stems
+	return Object.assign(dummy, list).stems
 }
 
-listStems().forEach(testStemTuple)
+// TODO: `test.each()` with longer timeout
+(ABBREVIATE ? HEAVY_STEMS : listStems()).forEach(testStemTuple)
