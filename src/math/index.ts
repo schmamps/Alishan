@@ -9,7 +9,7 @@ export const fix = (
 	places: number,
 	coeff: number = 1,
 ) => {
-	const multiple = Math.pow(10, places) * coeff
+	const pow = Math.pow(10, places)
 
-	return (val: number) => Math.round(val * multiple) / multiple
+	return (val: number) => Math.round(val * pow * coeff) / pow
 }
