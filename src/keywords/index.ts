@@ -1,27 +1,33 @@
-import {Keyword} from './Keyword'
-import {KeywordTuple} from 'Typing'
+import { Stemmer } from 'Typing'
 import * as tokenize from '../tokenize'
-import * as DEFAULTS from './defaults'
+import * as MODULE_DEFAULTS from './defaults'
+import * as kwFilter from './filter'
+import { Keyword as ModuleClass } from './Keyword'
 
 
-interface KeywordOptions {
+export interface KeywordOptions {
 	minimumRank?: number,
 	stopWords?: string[],
+	stem?: Stemmer,
+}
+
+export const DEFAULTS = MODULE_DEFAULTS
+export const filter = kwFilter
+export class Keyword extends ModuleClass {}
+
+const getKeywords = (
+	allWords: string[],
+	stopWords: string[],
+	stem: Stemmer,
+): string[] => {
+	const filter = kwFilter.create(stopWords)
+
+	return allWords.filter(filter).map(stem)
 }
 
 /**
- * Create word filter function
- * @param stopWords - scope for filter `(arg) => !stopWords.includes(arg)`
- */
-const createWordFilter = (
-	stopWords: string[],
-) => (
-	word: string,
-): boolean => !stopWords.includes(word)
-
-/**
  * Increment instance count of  `word` in `counted`
- * @param {StringNumberPair} counted - key: word, value: count
+ * @param {Map.<string, number>} counted
  * @param {string} word - word count to increment
  * @returns {Map.<string, number>} - updated count
 **/
@@ -37,17 +43,13 @@ const countWord = (
 
 /**
  * Filter and count keywords from all words in content
- * @param allWords - all words in content
+ * @param stems - all words in content
  * @param stopWords - words not to count
  */
 const countKeywords = (
-	allWords: string[],
-	stopWords: string[],
+	stems: string[],
 ): [string, number][] => {
-	const byStopWords = createWordFilter(stopWords)
-
-	const counted = allWords.
-		filter(byStopWords).
+	const counted = stems.
 		reduce(countWord, new Map()).
 		entries()
 
@@ -77,41 +79,22 @@ const getKeywordThreshold = (
  * @param {string} body
  * @param {KeywordOptions} - {count: # of returned keywords, stopWords}
 **/
-const listKeywords = (
+export const list = (
 	body: string,
 	opts: KeywordOptions = {},
 ): Keyword[] => {
 	const {
 		minimumRank: minRank = DEFAULTS.minimumRank,
-		stopWords = DEFAULTS.stopWords
+		stopWords = DEFAULTS.stopWords,
+		stem = DEFAULTS.stem,
 	} = opts
 	const allWords = tokenize.words(body)
-	const keywords =
-		countKeywords(allWords, stopWords).
+	const stems = getKeywords(allWords, stopWords, stem)
+
+	const keywords = countKeywords(stems).
 		map((pair: [string, number]) => ({word: pair[0], freq: pair[1]})).
-		map((kw) => new Keyword(kw.word, kw.freq, allWords.length))
+		map((kw) => new Keyword(kw.word, kw.freq, stems.length))
 	const threshold = getKeywordThreshold(keywords, minRank);
 
 	return keywords.filter((kw) => kw.score >= threshold)
 }
-
-/**
- * List keywords in `text`, except tupled
- * @param {string} body
- * @param {KeywordOptions} - {count: # of returned keywords, stopWords}
- */
-const listKeywordsTuple = (
-	body: string,
-	opts: KeywordOptions = {},
-): KeywordTuple => {
-	const list = listKeywords(body, opts)
-
-	return [
-		list.map((kw) => kw.word),
-		list.map((kw) => kw.score)
-	]
-}
-
-export const createFilter = createWordFilter
-export const list = listKeywords
-export const listTuple = listKeywordsTuple

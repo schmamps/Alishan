@@ -1,4 +1,10 @@
+import { PrecisionSpec } from 'Typing'
+
+export { stem } from '../porter'
+
 export const minimumRank = 10
+
+export const precision: PrecisionSpec = [12]
 
 export const stopWords = [
 	// misc

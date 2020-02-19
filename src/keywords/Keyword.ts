@@ -1,4 +1,8 @@
-export const PRECISION = Math.pow(10, 12)
+import * as math from '../math'
+import { precision as PRECISION } from './defaults'
+
+// @ts-ignore TS2556
+const fix = math.fix(...PRECISION)
 
 /**
  * Score keyword by relative frequency
@@ -9,9 +13,9 @@ const scoreKeyword = (
 	freq: number,
 	wordCount: number
 ): number => {
-	const raw = freq / wordCount * 1.5 // + 1?
+	const floaty = freq / wordCount * 1.5 // + 1?
 
-	return Math.round(raw * PRECISION) / PRECISION
+	return fix(floaty)
 }
 
 export class Keyword {
