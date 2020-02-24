@@ -4,42 +4,15 @@ declare module "Typing" {
 		number[]
 	]
 
-	export interface KeywordObject {
-		word: string,
-		score: number,
-		count?: number,
+	export type PrecisionSpec = number[]
+
+	export interface Stemmer {
+		(str: string): string
 	}
 
-	export interface StringNumberPair {
-		[key: string]: number,
-	}
-
-	export interface ScoringMemo {
-		titleWords?: string[],
-		keys?: KeywordTuple,
-		body?: string,
-	}
-
-	export interface ScoringCache {
-		titleWords: string[],
-		keys: KeywordTuple,
-	}
-
-	export interface ScoringOptions {
+	export interface SummaryOptions {
 		idealLength?: number,
 		stopWords?: string[],
-		positionValues?: number[],
-	}
-
-	export interface SentenceScore {
-		keyword: number,
-		length: number,
-		position: number,
-		title: number,
-		total: number
-	}
-
-	export interface SummaryOptions extends ScoringOptions {
-		returnCount?: number,
+		positionScores?: number[],
 	}
 }
