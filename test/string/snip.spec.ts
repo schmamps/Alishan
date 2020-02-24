@@ -1,4 +1,4 @@
-import * as string from '../../src/string'
+import { snip } from '../../src/string/snip'
 
 type StringTestParams = [string, string, number?]
 
@@ -9,7 +9,7 @@ const testSnip = (params: StringTestParams) => {
 
 	test(`'${expected}' === snip(${params})`, () => {
 		// @ts-ignore
-		const actual = string.snip(...params)
+		const actual = snip(...params)
 
 		expect(actual).toEqual(expected)
 	})
