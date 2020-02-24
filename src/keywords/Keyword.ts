@@ -1,5 +1,8 @@
+import { PrecisionSpec } from 'Typing'
 import * as math from '../math'
-import { precision as PRECISION } from './defaults'
+
+
+export const PRECISION: PrecisionSpec = [12]
 
 // @ts-ignore TS2556
 const fix = math.fix(...PRECISION)
@@ -11,7 +14,7 @@ const fix = math.fix(...PRECISION)
  */
 const scoreKeyword = (
 	freq: number,
-	wordCount: number
+	wordCount: number,
 ): number => {
 	const floaty = freq / wordCount * 1.5 // + 1?
 
@@ -19,23 +22,15 @@ const scoreKeyword = (
 }
 
 export class Keyword {
-	_word: string
-	_score: number
+	readonly word: string
+	readonly score: number
 
 	constructor(word: string, freq: number, wordCount: number) {
-		this._word = word
-		this._score = scoreKeyword(freq, wordCount)
-	}
-
-	get word(): string {
-		return this._word
-	}
-
-	get score(): number {
-		return this._score
+		this.word = word
+		this.score = scoreKeyword(freq, wordCount)
 	}
 
 	toString() {
-		return this._word
+		return this.word
 	}
 }
