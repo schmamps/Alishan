@@ -33,10 +33,14 @@ const testWords = (
 	const sentTexts = doc.sentences.map((sent) => sent.text)
 	const sentWords = doc.sentences.map((sent) => sent.words)
 
-	sentWords.forEach((words, idx) => {
+	sentTexts.forEach((text, idx) => {
 		test(`${doc.title} sent ${idx}`, () => {
-			expect(tokenize.words(sentTexts[idx])).
-				toStrictEqual(words)
+			expect(
+				tokenize.words(text)
+			).
+			toStrictEqual(
+				sentWords[idx]
+			)
 		})
 	})
 }
