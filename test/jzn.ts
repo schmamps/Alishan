@@ -2,8 +2,8 @@ import * as fs from 'fs'
 
 
 export interface JZNOptions {
-	root: string,
-	ext: string,
+	root?: string,
+	ext?: string,
 }
 
 /**
@@ -36,34 +36,22 @@ export const save = (
 }
 
 /**
- * @returns {object}
-**/
-const getOpts = (
-	names: any[],
-	args: any[]
-): JZNOptions => {
-	const opts = (names.length === args.length) ? {} : args.pop()
-	const {root = 'test/data', ext = '.json'} = opts
-
-	return {root, ext}
-}
-
-/**
  * List full paths to strings in `paths` (arbitrary complexion)
  * use `opts` to set root and extension
- * @param {...string} paths
- * @param {?Object=} opts - `{root: 'test/data', ext: '.json'}`
- * @returns {string[]}
+ * @param name
+ * @param opts
+ * @returns string
  */
 export const locate = (
-...args: any[]
-): string[] => {
+	name: string,
+	...args: any[]
+): string => {
 	// @ts-ignore
-	const flat = args.flat(Infinity)
-	const names: string[] = flat.
-		filter((arg: any) => typeof(arg) === 'string')
-	const opts = getOpts(names, flat)
+	const opts = (typeof(args[0]) === 'object') ? args[0] : {}
+	const {root = `${__dirname}/data`, ext = '.json'} = opts
 
-	return names.
-		map((name) => [opts.root, `${name}${opts.ext}`].join('/'))
+	return [root, `${name}${ext}`].join('/')
 }
+
+export const COUNTRIES = ['cambodia', 'cameroon', 'canada']
+export const ESSAY = 'essay_snark'

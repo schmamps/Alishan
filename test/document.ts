@@ -33,11 +33,15 @@ export interface SampleDocumentKeyword {
 }
 
 export class SampleDocument {
+	name: string
 	title: SampleSentenceText
 	keywords: SampleDocumentKeyword[]
 	sentences: SampleSentence[]
 
-	constructor(path: string) {
+	constructor(name: string) {
+		this.name = name
+		const path = jzn.locate(name)
+
 		const data = Object.assign(
 			{
 				keywords: [],
@@ -63,3 +67,6 @@ export class SampleDocument {
 			join('  ')
 	}
 }
+
+export const instantiateDoc = (name: string) => new SampleDocument(name)
+
