@@ -8,7 +8,7 @@ interface TestItem {
 type FixParams = [number, number, number, number?]
 interface TestFix extends TestItem { params: FixParams[] }
 
-type SumParams = [number, number, number]
+type SumParams = [number, ...(number | number[])[]]
 interface TestSum extends TestItem { params: SumParams[] }
 
 const fix: TestFix = {
@@ -34,13 +34,18 @@ const fix: TestFix = {
 const sum: TestSum = {
 	params: [
 		[2, 1, 1],
-		[4, 2, 2]
+		[4, 2, 2],
+		[6, 2, 2, 2],
+		[8, 2, 2, [2, 2]],
+		[10, [2, 2, 2, 2, 2]]
 	],
 	test: (params: SumParams) => {
-		const [expected, a, b,] = params
+		const expected = params.shift()
+		const isArr = (arg: any) => Array.isArray(arg)
+		const args = params.map((p) => isArr(p) ? `[${p!.toString()}]` : p!)
 
-		test(`math.sum(${a}, ${b}) === ${expected}`, () => {
-			const actual = math.sum(a, b)
+		test(`math.sum(${args.join(', ')}) === ${expected}`, () => {
+			const actual = math.sum(...params)
 
 			expect(actual).toEqual(expected)
 		})

@@ -1,8 +1,11 @@
 export const sum = (
-	a: number,
-	b: number
+	...vals: any
 ): number => {
-	return a + b
+	return vals.
+		// @ts-ignore TS2339
+		flat(Infinity).
+		map(Number).
+		reduce((sum: number, val: number) => sum + val, 0)
 }
 
 export const fix = (
