@@ -1,5 +1,5 @@
 import * as porter from '../../src/porter/';
-import * as jzn from '../jzn';
+import * as jzn from '../params/jzn';
 
 
 // of 23K+ samples, test only the most heavily stemmed
