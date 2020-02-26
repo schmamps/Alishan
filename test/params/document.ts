@@ -1,41 +1,19 @@
 import * as jzn from './jzn'
+import { Keyword as SampleKeyword } from './Keyword'
+import { Sentence as SampleSentence } from './Sentence'
 
 
-export interface SampleSentenceScore {
-	title: number,
-	length: number,
-	dbs: number,
-	sbs: number,
-	position: number,
-	keyword: number,
-	total: number,
-}
-
-export interface SampleSentenceText {
+interface SampleSentenceText {
 	text: string,
 	words: string[],
 	filtered: string[],
 	keywords: string[],
 }
 
-export interface SampleSentence extends SampleSentenceText {
-	index: number,
-	of: number,
-	rank: number,
-	score: SampleSentenceScore,
-	stemmed: string[],
-}
-
-export interface SampleDocumentKeyword {
-	stem: string,
-	count: number,
-	score: number,
-}
-
-export class SampleDocument {
+export class Document {
 	name: string
 	title: SampleSentenceText
-	keywords: SampleDocumentKeyword[]
+	keywords: SampleKeyword[]
 	sentences: SampleSentence[]
 
 	constructor(name: string) {
@@ -54,9 +32,9 @@ export class SampleDocument {
 		const of = data.sentences.length
 
 		this.title = data.title
-		this.keywords = data.keywords!
+		this.keywords = data.keywords!.map((kw) => new SampleKeyword(kw))
 		this.sentences = data.sentences.map((sent) => {
-			return Object.assign({of}, sent)
+			return new SampleSentence(Object.assign({of}, sent))
 		})
 	}
 
@@ -67,6 +45,4 @@ export class SampleDocument {
 			join('  ')
 	}
 }
-
-export const instantiateDoc = (name: string) => new SampleDocument(name)
 
