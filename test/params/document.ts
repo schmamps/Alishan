@@ -15,6 +15,7 @@ export class Document {
 	title: SampleSentenceText
 	keywords: SampleKeyword[]
 	sentences: SampleSentence[]
+	readonly topKeywordCount: number
 
 	constructor(name: string) {
 		this.name = name
@@ -24,7 +25,8 @@ export class Document {
 			{
 				keywords: [],
 				sentences: [],
-				title: {text: '', words: [], filtered: [], keywords: []}
+				title: {text: '', words: [], filtered: [], keywords: []},
+				topKeywordCount: 0,
 			},
 			jzn.load(path)
 		);
@@ -32,10 +34,11 @@ export class Document {
 		const of = data.sentences.length
 
 		this.title = data.title
-		this.keywords = data.keywords!.map((kw) => new SampleKeyword(kw))
+		this.keywords = data.keywords.map((kw) => new SampleKeyword(kw))
 		this.sentences = data.sentences.map((sent) => {
 			return new SampleSentence(Object.assign({of}, sent))
 		})
+		this.topKeywordCount = data.topKeywordCount
 	}
 
 	get body() {
@@ -43,6 +46,19 @@ export class Document {
 			sentences.
 			map((sent) => sent.text).
 			join('  ')
+	}
+
+	get topKeywords(): SampleKeyword[] {
+		return this.keywords.filter((kw) => kw.count >= this.topKeywordCount)
+	}
+
+	getKeywordTuple(): [string[], number[]] {
+		const top = this.topKeywords
+
+		return [
+			top.map((kw) => kw.stem),
+			top.map((kw) => kw.score),
+		]
 	}
 }
 
