@@ -2,8 +2,10 @@ import * as tokenize from '../../src/tokenize'
 import * as sample from '../params/sample'
 
 
-const TEST = {
-	normalize: (params: sample.Params) => {
+const normalize = {
+	params: sample.params('normalize', sample.COUNTRIES),
+
+	test: (params: sample.Params) => {
 		const [tag, doc] = params
 
 		doc.
@@ -20,7 +22,12 @@ const TEST = {
 				})
 			})
 	},
-	sentences: (params: sample.Params) => {
+}
+
+const sentences = {
+	params: sample.params('sentences', sample.COUNTRIES),
+
+	test: (params: sample.Params) => {
 		const [tag, doc] = params
 
 		test(tag, () => {
@@ -31,7 +38,12 @@ const TEST = {
 			expect(actual).toStrictEqual(expected)
 		})
 	},
-	words: (params: sample.Params) => {
+}
+
+const words = {
+	params: sample.params('words', sample.COUNTRIES),
+
+	test: (params: sample.Params) => {
 		const [tag, doc] = params
 		const sentTexts = doc.sentences.map((sent) => sent.text)
 		const sentWords = doc.sentences.map((sent) => sent.words)
@@ -47,14 +59,10 @@ const TEST = {
 	},
 }
 
-sample.
-	params('normailze', sample.COUNTRIES).
-	forEach(TEST.normalize)
+const tests = [
+	normalize,
+	sentences,
+	words,
+]
 
-sample.
-	params('sentences', sample.COUNTRIES).
-	forEach(TEST.sentences)
-
-sample.
-	params('words', sample.COUNTRIES).
-	forEach(TEST.words)
+tests.forEach((item) => item.params.forEach(item.test))

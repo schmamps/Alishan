@@ -6,8 +6,9 @@ import stopWords from '../params/stop-words'
 
 const DEFAULT_IDIOM = new Idiom()
 
-const TEST = {
-	dbs: (params: sample.Params) => {
+const dbs = {
+	params: sample.params('dbs', sample.LONG),
+	test: (params: sample.Params) => {
 		const [tag, doc] = params
 		const [kwStrs, kwScores] = doc.getKeywordTuple()
 
@@ -20,7 +21,11 @@ const TEST = {
 			})
 		})
 	},
-	sbs: (params: sample.Params) => {
+}
+
+const sbs = {
+	params: sample.params('sbs', sample.LONG),
+	test: (params: sample.Params) => {
 		const [tag, doc] = params
 		const [kwStrs, kwScores] = doc.getKeywordTuple()
 
@@ -33,7 +38,11 @@ const TEST = {
 			})
 		})
 	},
-	keywords: (params: sample.Params) => {
+}
+
+const keywords = {
+	params: sample.params('keywords', sample.LONG),
+	test: (params: sample.Params) => {
 		const [tag, doc] = params
 
 		doc.sentences.forEach((sent, idx) => {
@@ -45,7 +54,11 @@ const TEST = {
 			})
 		})
 	},
-	length: (params: sample.Params) => {
+}
+
+const length = {
+	params: sample.params('length', sample.LONG),
+	test: (params: sample.Params) => {
 		const [tag, doc] = params
 		const {idealSentenceLength: idealLength} = DEFAULT_IDIOM
 
@@ -58,7 +71,11 @@ const TEST = {
 			})
 		})
 	},
-	position: (params: sample.Params) => {
+}
+
+const position = {
+	params: sample.params('position', sample.LONG),
+	test: (params: sample.Params) => {
 		const [tag, doc] = params
 		const sentCount = doc.sentences.length
 		const { positionScores: posScores } = DEFAULT_IDIOM
@@ -72,7 +89,11 @@ const TEST = {
 			})
 		})
 	},
-	title: (params: sample.Params) => {
+}
+
+const title = {
+	params: sample.params('title', sample.LONG),
+	test: (params: sample.Params) => {
 		const [tag, doc] = params
 
 		doc.sentences.forEach((sent, idx) => {
@@ -88,7 +109,11 @@ const TEST = {
 			})
 		})
 	},
-	total: (params: sample.Params) => {
+}
+
+const total = {
+	params: sample.params('total', sample.LONG),
+	test: (params: sample.Params) => {
 		const [tag, doc] = params
 		doc.sentences.forEach((sent, idx) => {
 			const actual = scoring.total(
@@ -106,31 +131,14 @@ const TEST = {
 	},
 }
 
-sample.
-	params('dbs', sample.LONG).
-	forEach(TEST.dbs)
+const tests = [
+	dbs,
+	sbs,
+	keywords,
+	length,
+	position,
+	title,
+	total,
+]
 
-sample.
-	params('sbs', sample.LONG).
-	forEach(TEST.sbs)
-
-sample.
-	params('keywords', sample.LONG).
-	forEach(TEST.keywords)
-
-sample.
-	params('length', sample.LONG).
-	forEach(TEST.length)
-
-sample.
-	params('position', sample.LONG).
-	forEach(TEST.position)
-
-sample.
-	params('title', sample.LONG).
-	forEach(TEST.title)
-
-sample.
-	params('total', sample.LONG).
-	forEach(TEST.total)
-
+tests.forEach((item) => item.params.forEach(item.test))

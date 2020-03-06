@@ -1,8 +1,10 @@
 import * as sample from '../params/sample'
 import { Sentence } from '../../src/sentence/Sentence'
 
-const TEST = {
-	constructor: (params: sample.Params) => {
+
+const constructor = {
+	params: sample.params('constructor', 'cambodia'),
+	test: (params: sample.Params) => {
 		const [tag, doc] = params
 
 		doc.sentences.forEach((sent, idx) => test(`${tag}/${idx}`, () => {
@@ -26,7 +28,8 @@ const TEST = {
 		}))
 	},
 }
+const tests = [
+	constructor,
+]
 
-sample.
-	params('constructor', 'cambodia').
-	forEach(TEST.constructor)
+tests.forEach((item) => item.params.forEach(item.test))

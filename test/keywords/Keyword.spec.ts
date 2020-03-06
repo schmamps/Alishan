@@ -2,20 +2,29 @@ import * as sample from '../params/sample'
 import { Keyword, } from '../../src/keywords/'
 
 
+const constructor = {
+	params: sample.params('constructor', sample.COUNTRIES, sample.ESSAY),
 
-const testConstructor = (item: sample.Params) => {
-	const [tag, doc] = item
-	const count = doc.keywords.reduce((count, kw) => count + kw.count, 0)
+	test: (params: sample.Params) => {
+		const [tag, doc] = params
+		const count = doc.keywords.reduce((count, kw) => count + kw.count, 0)
 
-	doc.keywords.forEach((expected) => {
-		test(`${tag}/${expected.stem}`, () => {
-			const actual = new Keyword(expected.stem, expected.count, count)
+		doc.keywords.forEach((expected) => {
+			test(`${tag}/${expected.stem}`, () => {
+				const actual = new Keyword(
+					expected.stem,
+					expected.count,
+					count
+				)
 
-			expected.compare(actual)
+				expected.compare(actual)
+			})
 		})
-	})
+	},
 }
 
-sample.
-	params('constructor', sample.COUNTRIES, sample.ESSAY).
-	forEach(testConstructor)
+const tests = [
+	constructor
+]
+
+tests.forEach((item) => item.params.forEach(item.test))

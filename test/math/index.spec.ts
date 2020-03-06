@@ -52,5 +52,9 @@ const sum: TestSum = {
 	},
 }
 
-fix.params.forEach((params) => fix.test(params))
-sum.params.forEach((params) => sum.test(params))
+const tests: TestItem[] = [
+	fix,
+	sum,
+]
+
+tests.forEach((item) => item.params.forEach(item.test))

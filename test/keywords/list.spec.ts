@@ -44,20 +44,24 @@ const createWordTest = (
 	})
 }
 
+const list = {
+	params: sample.params('list keywords', sample.COUNTRIES, sample.ESSAY),
 
-const testList = (item: sample.Params) => {
-	const [tag, doc] = item
-	const { body } = doc
-	const idiom = new Idiom({stopWords})
-	const actual = keywords.list(body, idiom)
+	test: (params: sample.Params) => {
+		const [tag, doc] = params
+		const { body } = doc
+		const idiom = new Idiom({stopWords})
+		const actual = keywords.list(body, idiom)
 
-	testLength(actual, doc, tag)
+		testLength(actual, doc, tag)
 
-	const testWord = createWordTest(doc, tag)
-	actual.forEach(testWord)
+		const testWord = createWordTest(doc, tag)
+		actual.forEach(testWord)
+	}
 }
 
+const tests = [
+	list
+]
 
-sample.
-	params('list keywords', sample.COUNTRIES, sample.ESSAY).
-	forEach(testList)
+tests.forEach((item) => item.params.forEach(item.test))

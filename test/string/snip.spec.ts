@@ -1,24 +1,33 @@
-import { snip } from '../../src/string/snip'
+import * as string from '../../src/string/snip'
+
 
 type StringTestParams = [string, string, number?]
+interface TestSnip {
+	params: StringTestParams[],
+	test: (x: StringTestParams) => void
+}
 
 const ATOZ = 'abcdefghijklmnopqrstuvwxyz'
 
-const testSnip = (params: StringTestParams) => {
-	const expected = params.shift()
+const snip: TestSnip = {
+	params: [
+		['abcdefghij...', ATOZ,],
+		['abc...', ATOZ, 3],
+		[ATOZ, ATOZ, 26],
+	],
+	test: (params: StringTestParams) => {
+		const expected = params.shift()
 
-	test(`'${expected}' === snip(${params})`, () => {
-		// @ts-ignore
-		const actual = snip(...params)
+		test(`'${expected}' === snip(${params})`, () => {
+			// @ts-ignore
+			const actual = string.snip(...params)
 
-		expect(actual).toEqual(expected)
-	})
+			expect(actual).toEqual(expected)
+		})
+	},
 }
-
-const PARAMS: StringTestParams[] = [
-	['abcdefghij...', ATOZ,],
-	['abc...', ATOZ, 3],
-	[ATOZ, ATOZ, 26],
+const tests = [
+	snip
 ]
 
-PARAMS.forEach(testSnip)
+tests.forEach((item) => item.params.forEach(item.test))

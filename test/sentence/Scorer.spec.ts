@@ -2,8 +2,10 @@ import * as sample from '../params/sample'
 import { Scorer } from '../../src/sentence/Scorer'
 
 
-const TEST = {
-	constructor: (params: sample.Params) => {
+const constructor = {
+	params: sample.params('constructor', sample.LONG),
+
+	test: (params: sample.Params) => {
 		const [tag, doc] = params
 
 		doc.sentences.forEach((sent, idx) => test(`${tag}/${idx}`, () => {
@@ -18,7 +20,12 @@ const TEST = {
 			expect(actual.subScores.title).toBe(0)
 		}))
 	},
-	keywords: (params: sample.Params) => {
+}
+
+const keywords = {
+	params: sample.params('keywords', sample.LONG),
+
+	test: (params: sample.Params) => {
 		const [tag, doc] = params
 
 		doc.sentences.forEach((sent, idx) => test(`${tag}/${idx}`, () => {
@@ -33,7 +40,12 @@ const TEST = {
 			expect(actual.sbs).toBeCloseTo(expected.sbs)
 		}))
 	},
-	position: (params: sample.Params) => {
+}
+
+const position = {
+	params: sample.params('position', sample.LONG),
+
+	test: (params: sample.Params) => {
 		const [tag, doc] = params
 
 		doc.sentences.forEach((sent, idx) => test(`${tag}/${idx}`, () => {
@@ -46,7 +58,12 @@ const TEST = {
 			expect(actual.position).toBeCloseTo(expected.position)
 		}))
 	},
-	title: (params: sample.Params) => {
+}
+
+const title = {
+	params: sample.params('title', sample.LONG),
+
+	test: (params: sample.Params) => {
 		const [tag, doc] = params
 
 		doc.sentences.forEach((sent, idx) => test(`${tag}/${idx}`, () => {
@@ -58,7 +75,11 @@ const TEST = {
 			expect(actual.title).toBeCloseTo(expected.title)
 		}))
 	},
-	getSentence: (params: sample.Params) => {
+}
+
+const getSentence = {
+	params: sample.params('get sentence', sample.LONG),
+	test: (params: sample.Params) => {
 		const [tag, doc] = params
 
 		doc.sentences.forEach((sent, idx) => test(`${tag}/${idx}`, () => {
@@ -82,22 +103,12 @@ const TEST = {
 	},
 }
 
-sample.
-	params('constructor', sample.LONG).
-	forEach(TEST.constructor)
+const tests = [
+	constructor,
+	keywords,
+	position,
+	title,
+	getSentence
+]
 
-sample.
-	params('keywords', sample.LONG).
-	forEach(TEST.keywords)
-
-sample.
-	params('position', sample.LONG).
-	forEach(TEST.position)
-
-sample.
-	params('title', sample.LONG).
-	forEach(TEST.title)
-
-sample.
-	params('get sentence', sample.LONG).
-	forEach(TEST.getSentence)
+tests.forEach((item) => item.params.forEach(item.test))
