@@ -16,3 +16,13 @@ export const fix = (
 
 	return (val: number) => Math.round(val * pow * coeff) / pow
 }
+
+export const getRankThreshold = (
+	values: number[],
+	minRank: number,
+): number => {
+	const ranked = values.sort((a, b) => b - a)
+	const rankIdx = Math.min(ranked.length, minRank) - 1
+
+	return ranked[rankIdx]
+}
