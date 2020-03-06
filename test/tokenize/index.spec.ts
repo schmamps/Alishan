@@ -1,57 +1,60 @@
 import * as tokenize from '../../src/tokenize'
-import { SampleDocument } from '../document'
+import * as sample from '../params/sample'
 
 
-const SAMPLES = ['cambodia', 'cameroon', 'canada'].
-	map((name) => new SampleDocument(name))
+const TEST = {
+	normalize: (params: sample.Params) => {
+		const [tag, doc] = params
 
-const testNormalize = (
-	strPairs: string[],
-) => {
-	const [input, expected] = strPairs
+		doc.
+			sentences.
+			forEach((sent, sIdx) => {
+				const words = tokenize.words(sent.text)
+				words.forEach((word, wIdx) => {
+					test(`${tag}/${sIdx}/${wIdx}`, () => {
+						const actual = tokenize.normalize(word)
+						const expected = sent.words[wIdx]
 
-	test(`normalize '${input}' to '${expected}'`, () => {
-		expect(tokenize.normalize(input)).toBe(expected)
-	})
-}
+						expect(actual).toEqual(expected)
+					})
+				})
+			})
+	},
+	sentences: (params: sample.Params) => {
+		const [tag, doc] = params
 
-const testSentences = (
-	doc: SampleDocument,
-) => {
-	const expected = doc.sentences.map((sent) => sent.text)
-	const body = expected.join(' ')
+		test(tag, () => {
+			const expected = doc.sentences.map((sent) => sent.text)
+			const body = expected.join('  ')
+			const actual = tokenize.sentences(body)
 
-	test(`sentences in '${doc.title}'`, () => {
-		expect(tokenize.sentences(body)).
-			toStrictEqual(expected)
-	})
-}
-
-const testWords = (
-	doc: SampleDocument,
-) => {
-	const sentTexts = doc.sentences.map((sent) => sent.text)
-	const sentWords = doc.sentences.map((sent) => sent.words)
-
-	sentTexts.forEach((text, idx) => {
-		test(`${doc.title} sent ${idx}`, () => {
-			expect(
-				tokenize.words(text)
-			).
-			toStrictEqual(
-				sentWords[idx]
-			)
+			expect(actual).toStrictEqual(expected)
 		})
-	})
+	},
+	words: (params: sample.Params) => {
+		const [tag, doc] = params
+		const sentTexts = doc.sentences.map((sent) => sent.text)
+		const sentWords = doc.sentences.map((sent) => sent.words)
+
+		sentTexts.forEach((text: string, idx: number) => {
+			test(`${tag}/sent/${idx}`, () => {
+				const actual = tokenize.words(text)
+				const expected = sentWords[idx]
+
+				expect(actual).toStrictEqual(expected)
+			})
+		})
+	},
 }
 
-// normalize string
-[
-	['!AbCdeFG   ', 'abcdefg'],
-].forEach(testNormalize)
+sample.
+	params('normailze', sample.COUNTRIES).
+	forEach(TEST.normalize)
 
-// tokenize sentences
-SAMPLES.forEach(testSentences)
+sample.
+	params('sentences', sample.COUNTRIES).
+	forEach(TEST.sentences)
 
-// tokenize words
-SAMPLES.forEach(testWords)
+sample.
+	params('words', sample.COUNTRIES).
+	forEach(TEST.words)
