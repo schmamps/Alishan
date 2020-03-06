@@ -38,7 +38,7 @@ const testStemTuple = (stemTuple: string[]) => {
 	const [input, expected] = stemTuple
 
 	test(
-		`stem('${input}') === '${expected}'`,
+		`stem/${input}-${expected}`,
 		() => {
 			expect(porter.stem(input)).toEqual(expected)
 		},
