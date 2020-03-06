@@ -1,19 +1,21 @@
+import * as sample from '../params/sample'
 import { Keyword, } from '../../src/keywords/'
-import { SampleDocument, } from '../document'
 
 
-const testConstruct = (name: string) => {
-	const doc = new SampleDocument(name)
+
+const testConstructor = (item: sample.Params) => {
+	const [tag, doc] = item
 	const count = doc.keywords.reduce((count, kw) => count + kw.count, 0)
 
-	doc.keywords.forEach((kw) => {
-		test(`Keyword(${kw.stem}, ${kw.count}, ${count})`, () => {
-			const {word, score} = new Keyword(kw.stem, kw.count, count)
+	doc.keywords.forEach((expected) => {
+		test(`${tag}/${expected.stem}`, () => {
+			const actual = new Keyword(expected.stem, expected.count, count)
 
-			expect(word).toEqual(kw.stem)
-			expect(score).toBeCloseTo(kw.score)
+			expected.compare(actual)
 		})
 	})
 }
 
-['cambodia', 'cameroon', 'canada', 'essay_snark'].forEach(testConstruct)
+sample.
+	params('constructor', sample.COUNTRIES, sample.ESSAY).
+	forEach(testConstructor)
