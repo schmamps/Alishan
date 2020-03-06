@@ -1,60 +1,7 @@
-import {content as scoreContent} from './score'
-import {ScoredSentence} from './Scored-Sentence'
-import {SummaryOptions} from 'Typing'
+import { Content } from './content'
+import { Idiom, IdiomOptions } from 'idiom/Idiom';
 
-
-/**
- * List and score all sentences in `body`
-* @param {string} title - content title
-* @param {string} body - content body
-* @param {SummaryOptions} options
-*/
-const scoreSentences = (
-   title: string,
-   body: string,
-   options: SummaryOptions
-): ScoredSentence[] => {
-	return scoreContent(title, body, options)
-}
-
-/**
- * Get minimum score among `scored` to qualify for summary
- * @param scored - scored sentences
- * @param returnCount - minimum qualify rank for summary
- */
-const getSummaryThreshold = (
-	scored: ScoredSentence[],
-	returnCount: number
-): number => {
-	if (scored.length < 1) { return -Infinity }
-
-	const scores = scored.
-		map((sent) => sent.score.total).
-		sort((a, b) => b - a)
-
-	return scores[Math.max(returnCount, scores.length) - 1]
-}
-
-/**
- * Summarize `text`
- * @param {string} title - content title
- * @param {string} body - content body
- * @param {SummaryOptions} options
- */
-const doSummary = (
-	title: string,
-	body: string,
-	options: SummaryOptions,
-): string[] => {
-	const {returnCount = 5} = options
-	const scored = scoreSentences(title, body, options)
-	const threshold = getSummaryThreshold(scored, returnCount)
-
-	return scored.
-		filter((sent) => sent.score.total >= threshold).
-		sort((a, b) => a.position - b.position).
-		map(String)
-}
+export type SummaryOptions = IdiomOptions & {returnCount: number}
 
 /**
  * Summarize `body`
@@ -63,9 +10,13 @@ const doSummary = (
  * @param {SummaryOptions} options
  */
 export const summarize = (
+	body: string,
 	title: string,
-	text: string,
-	opts: SummaryOptions = {}
+	opts: SummaryOptions = {returnCount: 5},
 ): string[] => {
-	return (text.trim().length) ? doSummary(title, text, opts) : []
+	const content = new Content(body, title, new Idiom(opts))
+
+	if (content.sentences.length === 0) { return [] }
+
+	return content.summarize(opts.returnCount)
 }
