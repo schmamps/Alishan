@@ -1,43 +1,34 @@
-/// <reference path="typing.d.ts" />
-import {ScoringMemo, SummaryOptions, ScoringOptions, SentenceScore, ScoringCache} from 'Typing'
-import * as keywords from './keywords'
-import {positionValues as DEFAULT_POS_VALS} from './position-values'
-import {ScoredSentence} from './Scored-Sentence'
-import * as porter from './porter/stemmer'
-import * as stopper from './stop-words'
-import * as tokenize from './tokenize'
+import { PrecisionSpec } from 'Typing'
+import filter from '../filter'
+import * as math from '../math'
 
 
-export const IDEAL_LENGTH = 20
-export const PRECISION = Math.pow(10, 6)
+export const PRECISION: PrecisionSpec = [6, .25]
 
 interface KeywordMatch {
 	index: number,
 	score: number,
 }
 
-/**
- * Sum passed args
- * @param a
- * @param b
- * @returns - sum of `a` and `b`
-**/
-const sum = (a: number, b: number): number => a + b
+
+// reduce jitter in total (was: `summed / 4`)
+// @ts-ignore TS2556
+const fix = math.fix(...PRECISION)
 
 /**
  * Score `word` by match to keywords
  * @param word
- * @param keyStrs - string value of keywords
- * @param keyScores - keyword scores (indices correspond w/ words)
+ * @param kwStrs - string value of keywords
+ * @param kwScores - keyword scores (indices correspond w/ words)
 **/
 const scoreWordByKeyWord = (
 	word: string,
-	keyStrs: string[],
-	keyScores: number[],
+	kwStrs: string[],
+	kwScores: number[],
 ) => {
-	const idx = keyStrs.indexOf(word)
+	const idx = kwStrs.indexOf(word)
 
-	return (idx < 0) ? 0 : keyScores[idx]
+	return (idx < 0) ? 0 : kwScores[idx]
 }
 
 /**
@@ -62,49 +53,18 @@ const sumMatches = (
 	return total + add
 }
 
-const listTitleStems = (
-	title: string,
-	stopWords?: string[]
-): string[] => {
-	const filter = stopper.createFilter(stopWords)
-
-	return tokenize.
-		words(title).
-		filter(filter).
-		map(porter.stem)
-}
-
-/**
- * Memoize content data
- * @param title - content title
- * @param opts - summary options
- * @param initial - intial data
- */
-const memoizeContent = (
-	title: string,
-	opts: SummaryOptions,
-	initial: ScoringMemo = {},
-): ScoringCache => {
-	const {
-		titleWords = listTitleStems(title, opts.stopWords),
-		keys = keywords.listTuple(initial.body || '', opts),
-	} = initial
-
-	return Object.assign(initial, {titleWords, keys})
-}
-
 /**
  *
  * @param sentenceWords
- * @param keyStrs
+ * @param kwStrs
  */
 const getDensityConstant = (
 	sentenceWords: string[],
-	keyStrs: string[]
+	kwStrs: string[]
 ): number => {
 	const commonWordCount = Array.
 		from(new Set(sentenceWords)).
-		filter((word: string) => keyStrs.includes(word)).
+		filter((word: string) => kwStrs.includes(word)).
 		length;
 
 	return commonWordCount + 1
@@ -113,24 +73,24 @@ const getDensityConstant = (
 /**
  * Score by keyword density
  * @param sentenceWords - words in sentence
- * @param keyStrs - string value of keywords
- * @param keyScores - keyword scores (indices correspond w/ words)
+ * @param kwStrs - string value of keywords
+ * @param kwScores - keyword scores (indices correspond w/ words)
 **/
-const scoreDBS = (
+export const dbs = (
 	sentenceWords: string[],
-	keyStrs: string[],
-	keyScores: number[],
+	kwStrs: string[],
+	kwScores: number[],
 ): number => {
 	const matchKeywords = (
 		word: string,
 		index: number
 	): KeywordMatch => {
-		const score = scoreWordByKeyWord(word, keyStrs, keyScores)
+		const score = scoreWordByKeyWord(word, kwStrs, kwScores)
 
 		return {index, score}
 	}
 
-	const k = getDensityConstant(sentenceWords, keyStrs)
+	const k = getDensityConstant(sentenceWords, kwStrs)
 	const summ = sentenceWords.
 		map(matchKeywords).
 		filter((match) => match.score > 0).
@@ -142,56 +102,48 @@ const scoreDBS = (
 
 /**
  * Score by summation
- * @param sentenceWords - words in sentence
- * @param keyStrs - string value of keywords
- * @param keyScores - score of keywords (must match keyStrs index!)
- * @param length - length of sentenceWords
+ * @param sentStems - words in sentence
+ * @param kwStrs - string value of keywords
+ * @param kwScores - score of keywords (indices correspond w/ kwStrs)
+ * @param length - length of sentenceWords (micro-optimization)
 **/
-const scoreSBS = (
-	sentenceWords: string[],
-	keyStrs: string[],
-	keyScores: number[],
+export const sbs = (
+	sentStems: string[],
+	kwStrs: string[],
+	kwScores: number[],
 	length?: number
 ): number => {
-	const score = sentenceWords.
-		map((word) => scoreWordByKeyWord(word, keyStrs, keyScores)).
-		reduce(sum, 0)
-	const inv = 1 / (length || sentenceWords.length)
-	const share = score  // / 10
+	const inv = 1 / (length ?? sentStems.length)
+	const stemScores = sentStems.
+		filter((stem) => kwStrs.includes(stem)).
+		map((word) => scoreWordByKeyWord(word, kwStrs, kwScores))
+	const sbs = inv * math.sum(stemScores)
 
-	return inv * share
+	return sbs
 }
 
 /**
- * Score `sentenceWords` by keyword frequency
+ * Compose keyword score
  * @param sentenceWords
  * @param keys
 **/
-const scoreByKeywords = (
-	sentenceWords: string[],
-	keys: [string[], number[]],
+export const keywords = (
+	dbsScore: number,
+	sbsScore: number,
 ): number => {
-	const {length} = sentenceWords
-	if (length === 0) { return length }
-
-	const [keyStrs, keyScores] = keys
-	const dbs = scoreDBS(sentenceWords, keyStrs, keyScores)
-	const sbs = scoreSBS(sentenceWords, keyStrs, keyScores, length)
-	const kws = (sbs + dbs) * 5.0
-
-	return kws
+	return (dbsScore + sbsScore) * 5.0
 }
 
 /**
  * Score by sentence length
- * @param sentenceLength
+ * @param sentLength
  * @param idealLength
 **/
-const scoreLength = (
-	sentenceLength: number,
+export const length = (
+	sentLength: number,
 	idealLength: number
 ): number => {
-	const diff = idealLength - Math.abs(idealLength - sentenceLength)
+	const diff = idealLength - Math.abs(idealLength - sentLength)
 
 	return diff / idealLength
 };
@@ -202,7 +154,7 @@ const scoreLength = (
  * @param sentCount - length of sentence list
  * @param posScores - sentence position scores
 **/
-const scorePosition = (
+export const position = (
 	sentIdx: number,     // - 0-based index of sentence position in list
 	sentCount: number,
 	posScores: number[]
@@ -219,7 +171,7 @@ const scorePosition = (
  * @param sentenceWords - words in sentence
  * @param stopWords - list of stop words
 **/
-const scoreTitle = (
+export const title = (
 	titleWords: string[],
 	sentenceWords: string[],
 	stopWords: string[]
@@ -228,9 +180,10 @@ const scoreTitle = (
 		return 0
 	}
 
+	const outStopWords = filter(stopWords).one
 	const count = sentenceWords.
 		filter((word) => titleWords.indexOf(word) >= 0).
-		filter(stopper.createFilter(stopWords)).
+		filter(outStopWords).
 		length
 
 	return (count === 0) ? count : count / titleWords.length
@@ -243,100 +196,18 @@ const scoreTitle = (
  * @param posScore - sentence position score
  * @param titleScore - title score
 **/
-const composeScore = (
+export const total = (
 	kwScore: number,
 	lenScore: number,
 	posScore: number,
 	titleScore: number
 ): number => {
-	const summed:number = ([
-			titleScore * 1.5,
-			kwScore * 2.0,
-			lenScore * 0.5,
-			posScore,
-		]).
-		reduce(sum, 0)
+	const weighted = [
+		titleScore * 1.5,
+		kwScore * 2.0,
+		lenScore * 0.5,
+		posScore,
+	]
 
-	// reduce jitter (was: `summed / 4`)
-	return Math.round(summed / 4 * PRECISION) / PRECISION
+	return fix(math.sum(weighted))
 }
-
-/**
- * Score sentence `text` w/ options `opts`, memoized values, and position data
- * @param title - content title
- * @param text - sentence text
- * @param sentIdx - sentence index (0-based)
- * @param sentCount - number of sentences
- * @param opts - scoring options
- * @param memo - memoized content data
-**/
-const scoreSentence = (
-	title: string,
-	text: string,
-	sentIdx: number,
-	sentCount: number,
-	opts: ScoringOptions = {},
-	memo: ScoringMemo = {},
-): SentenceScore => {
-	const sentenceWords = tokenize.
-		words(text).
-		map(porter.stem)
-	const {
-		idealLength = IDEAL_LENGTH,
-		stopWords = stopper.defaults,
-		positionValues = DEFAULT_POS_VALS,
-	} = opts
-	const {titleWords, keys,} = memoizeContent(title, opts, memo)
-	const base = {
-		keyword: scoreByKeywords(sentenceWords, keys),
-		length: scoreLength(sentenceWords.length, idealLength),
-		title: scoreTitle(titleWords, sentenceWords, stopWords),
-		position: scorePosition(sentIdx, sentCount, positionValues),
-	}
-	const total = composeScore(
-		base.keyword,
-		base.length,
-		base.position,
-		base.title
-	)
-
-	return Object.assign(base, {total})
-}
-
-/**
- * Score sentences in `text`, weighted by `title`
- * @param title - content title
- * @param body - content body
- * @param opts - summary options
-**/
-const scoreContent = (
-	title: string,
-	body: string,
-	opts: SummaryOptions
-): ScoredSentence[] => {
-	const allSentences = tokenize.sentences(body)
-	const sentCount = allSentences.length
-	const memo = memoizeContent(title, opts, {body})
-	const scoreScoped = (
-		text: string,
-		sentIdx: number
-	) => scoreSentence(title, text, sentIdx, sentCount, opts, memo)
-
-	const instantiate = (
-		score: SentenceScore,
-		sentIdx: number
-	) => new ScoredSentence(
-		allSentences[sentIdx],
-		sentIdx,
-		sentCount,
-		score
-	)
-
-	return allSentences.
-		map(scoreScoped).
-		map(instantiate)
-}
-
-export const content = scoreContent
-export const memoize = memoizeContent
-export const sentence = scoreSentence

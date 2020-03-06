@@ -1,44 +1,26 @@
-import {SentenceScore} from 'Typing'
+import { Score, SentenceSubscores, } from './Score'
 
 
-export class ScoredSentence {
-	_text: string
-	_score: SentenceScore
-	_index: number
-	_of: number
+export class Sentence {
+	readonly text: string
+	readonly index: number
+	readonly score: Score
 
 	constructor(
 		text: string,
 		sentIdx: number,
-		sentCount: number,
-		score: SentenceScore,
+		subScores: SentenceSubscores,
 	) {
-		this._text = text.trim()
-		this._index = Math.round(sentIdx)
-		this._of = Math.round(sentCount)
-		this._score = score
-
-		if (this._index < 0 || this._of - this._index <= 0) {
-			throw `Invalid index [${this._index}] (len: ${this._of})`;
-		}
+		this.text = text.trim()
+		this.index = Math.round(sentIdx)
+		this.score = new Score(subScores)
 	}
-
-	get text() { return this._text }
-
-	get position() { return this._index + 1 }
-
-	get of() { return this._of }
-
-	get score() { return this._score }
-
-	toString() { return this.text }
 
 	get [Symbol.toStringTag]() {
 		const max = 10
-		const {text} = this
-		const snip = text.substr(0, max).trim()
-		const ellip = (text.length > snip.length) ? '...' : ''
+		const snip = this.text.substr(0, max).trim()
+		const ellip = (this.text.length > snip.length) ? '...' : ''
 
-		return `ScoredSentence('${snip}${ellip}')`
+		return `Sentence('${snip}${ellip}', ${this.index}, {...})`
 	}
 }
