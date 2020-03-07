@@ -1,7 +1,27 @@
 import { Content } from './content'
-import { Idiom, IdiomOptions } from 'idiom/Idiom';
+import { Idiom, IdiomOptions } from './idiom/Idiom';
 
 export type SummaryOptions = IdiomOptions & {returnCount: number}
+
+export const DEFAULTS: SummaryOptions = {returnCount: 5}
+
+const getContent = (
+	body: string,
+	title: string,
+	opts: IdiomOptions = {}
+) => {
+	return new Content(body, title, new Idiom(opts))
+}
+
+export const score = (
+	body: string,
+	title: string,
+	opts: IdiomOptions = {}
+) => {
+	const content = getContent(body, title, opts)
+
+	return content.score()
+}
 
 /**
  * Summarize `body`
@@ -12,11 +32,11 @@ export type SummaryOptions = IdiomOptions & {returnCount: number}
 export const summarize = (
 	body: string,
 	title: string,
-	opts: SummaryOptions = {returnCount: 5},
+	opts: SummaryOptions = DEFAULTS,
 ): string[] => {
-	const content = new Content(body, title, new Idiom(opts))
+	const content = getContent(body, title, opts)
 
-	if (content.sentences.length === 0) { return [] }
+	if (content.sentences.length < 1) { return [] }
 
 	return content.summarize(opts.returnCount)
 }
