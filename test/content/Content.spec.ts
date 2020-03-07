@@ -47,13 +47,6 @@ const compare = {
 		expect(actual.score.keyword).toBeCloseTo(expected.score.keyword)
 		expect(actual.score.total).toBeCloseTo(expected.score.total)
 	},
-	// TODO: ayyy
-	// summarize: (
-	// 	actual: string[],
-	// 	expected: string[],
-	// ) => {
-	// 	expect
-	// }
 }
 
 const constructor = {
