@@ -1,3 +1,3 @@
+export * as document from './Document'
 export * as sample from './sample'
-export * as document from './document'
 

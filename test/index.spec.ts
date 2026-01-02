@@ -1,3 +1,4 @@
+import { expect, test } from 'vitest'
 import * as alishan from '../src/'
 import * as sample from './params/sample'
 import stopWords from './params/stop-words'
@@ -12,7 +13,7 @@ const score = {
 			const scored = alishan.score(
 				doc.body,
 				doc.title.text,
-				{stopWords}
+				{ stopWords }
 			)
 
 			scored.forEach((actual, idx) => {
@@ -48,7 +49,7 @@ const summarize = {
 			const actual = alishan.summarize(
 				doc.body,
 				doc.title.text,
-				{returnCount: rc, stopWords}
+				{ returnCount: rc, stopWords }
 			)
 			const expected = doc.
 				sentences.

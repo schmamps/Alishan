@@ -1,3 +1,4 @@
+import { expect, test } from 'vitest'
 import { Idiom } from '../../src/idiom'
 import * as keywords from '../../src/keywords'
 import * as sample from '../params/sample'
@@ -35,14 +36,14 @@ const createWordTest = (
 ) => (
 	actual: keywords.Keyword
 ) => {
-	test(`${tag}/${actual.word}'`, () => {
-		const [expected = null] = doc.keywords.
-			filter((kw) => kw.stem === actual.word)
+		test(`${tag}/${actual.word}'`, () => {
+			const [expected = null] = doc.keywords.
+				filter((kw) => kw.stem === actual.word)
 
-		expect(expected).toBeTruthy()
-		expect(actual.score).toBeCloseTo(expected!.score)
-	})
-}
+			expect(expected).toBeTruthy()
+			expect(actual.score).toBeCloseTo(expected!.score)
+		})
+	}
 
 const list = {
 	params: sample.params('list keywords', sample.COUNTRIES, sample.ESSAY),
@@ -50,7 +51,7 @@ const list = {
 	test: (params: sample.Params) => {
 		const [tag, doc] = params
 		const { body } = doc
-		const idiom = new Idiom({stopWords})
+		const idiom = new Idiom({ stopWords })
 		const actual = keywords.list(body, idiom)
 
 		testLength(actual, doc, tag)

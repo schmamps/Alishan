@@ -2,7 +2,7 @@ import * as jzn from './jzn'
 
 const STOP_WORDS: string[] = ((): string[] => {
 	// for consistency with OolongT (somehow)
-	const dummy = {words: []}
+	const dummy = { words: [] }
 	const path = jzn.locate('stop-words')
 	const list = jzn.load(path)
 

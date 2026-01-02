@@ -1,3 +1,4 @@
+import { expect, test } from 'vitest'
 import * as keywords from '../../src/keywords/'
 
 test('module', () => {

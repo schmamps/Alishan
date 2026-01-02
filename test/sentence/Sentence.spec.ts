@@ -1,5 +1,6 @@
-import * as sample from '../params/sample'
+import { expect, test } from 'vitest'
 import { Sentence } from '../../src/sentence/Sentence'
+import * as sample from '../params/sample'
 
 
 const constructor = {
@@ -8,11 +9,11 @@ const constructor = {
 		const [tag, doc] = params
 
 		doc.sentences.forEach((sent, idx) => test(`${tag}/${idx}`, () => {
-			const {dbs, sbs, length, position, title} = sent.score
+			const { dbs, sbs, length, position, title } = sent.score
 			const actual = new Sentence(
 				sent.text,
 				sent.index,
-				{dbs, sbs, length, position, title}
+				{ dbs, sbs, length, position, title }
 			)
 			const expected = sent
 

@@ -1,5 +1,6 @@
-import * as sample from '../params/sample'
+import { expect, test } from 'vitest'
 import { Scorer } from '../../src/sentence/Scorer'
+import * as sample from '../params/sample'
 
 
 const constructor = {

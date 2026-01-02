@@ -1,3 +1,4 @@
+import { expect, test } from 'vitest'
 import * as tokenize from '../../src/tokenize'
 import * as sample from '../params/sample'
 

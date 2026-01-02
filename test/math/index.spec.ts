@@ -1,3 +1,4 @@
+import { expect, test } from 'vitest'
 import * as math from '../../src/math'
 
 interface TestItem {

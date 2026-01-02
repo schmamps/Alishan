@@ -25,7 +25,7 @@ export class Document {
 			{
 				keywords: [],
 				sentences: [],
-				title: {text: '', words: [], filtered: [], keywords: []},
+				title: { text: '', words: [], filtered: [], keywords: [] },
 				topKeywordCount: 0,
 			},
 			jzn.load(path)
@@ -36,7 +36,7 @@ export class Document {
 		this.title = data.title
 		this.keywords = data.keywords.map((kw) => new SampleKeyword(kw))
 		this.sentences = data.sentences.map((sent) => {
-			return new SampleSentence(Object.assign({of}, sent))
+			return new SampleSentence(Object.assign({ of }, sent))
 		})
 		this.topKeywordCount = data.topKeywordCount
 	}

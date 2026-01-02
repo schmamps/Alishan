@@ -1,3 +1,4 @@
+import { expect, test } from 'vitest'
 import filter from '../../src/filter'
 
 const LONG = [1, 2, 3, 4, 5]

@@ -1,3 +1,4 @@
+import { expect } from 'vitest'
 import { Keyword as SrcKeyword } from '../../src/keywords/Keyword'
 
 export class Keyword {
@@ -6,7 +7,7 @@ export class Keyword {
 	score: number
 
 	constructor(init: object) {
-		const opts = Object.assign({stem: '?!', count: 0, score: 0}, init)
+		const opts = Object.assign({ stem: '?!', count: 0, score: 0 }, init)
 
 		this.stem = opts.stem
 		this.count = opts.count

@@ -1,11 +1,12 @@
+import { expect, test } from 'vitest'
 import { Content } from '../../src/content/Content'
-import { Sentence } from '../../src/sentence/Sentence'
 import { Idiom } from '../../src/idiom'
+import { Sentence } from '../../src/sentence/Sentence'
 import * as sample from '../params/sample'
 import stopWords from '../params/stop-words'
 
 
-const DEFAULT_IDIOM = new Idiom({stopWords})
+const DEFAULT_IDIOM = new Idiom({ stopWords })
 
 const compare = {
 	constructor: (
@@ -53,12 +54,12 @@ const constructor = {
 	params: sample.params('constructor', sample.LONG),
 	test: (params: sample.Params) => {
 		const [tag, doc] = params
-		const initParams: {[key: string]: Idiom | boolean} = {
+		const initParams: { [key: string]: Idiom | boolean } = {
 			base: false,
 			default: new Idiom(),
-			stops: new Idiom({stopWords: []}),
-			ideal: new Idiom({idealSentenceLength: 9}),
-			posScores: new Idiom({positionScores: []}),
+			stops: new Idiom({ stopWords: [] }),
+			ideal: new Idiom({ idealSentenceLength: 9 }),
+			posScores: new Idiom({ positionScores: [] }),
 		}
 
 		Object.keys(initParams).forEach((key) => {
@@ -109,7 +110,7 @@ const summarize = {
 		const [tag, doc] = params
 		const content = new Content(doc.body, doc.title.text, DEFAULT_IDIOM)
 		const sents = doc.sentences.sort((a, b) => a.rank - b.rank)
-		const counts = [1/2, 1, 5]
+		const counts = [1 / 2, 1, 5]
 
 		counts.forEach((rc) => {
 

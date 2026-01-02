@@ -1,3 +1,4 @@
+import { expect, test } from 'vitest'
 import * as sentence from '../../src/sentence/'
 
 test('Scorer', () => {

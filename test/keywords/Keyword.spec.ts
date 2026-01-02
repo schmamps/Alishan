@@ -1,5 +1,6 @@
-import * as sample from '../params/sample'
+import { test } from 'vitest'
 import { Keyword, } from '../../src/keywords/'
+import * as sample from '../params/sample'
 
 
 const constructor = {

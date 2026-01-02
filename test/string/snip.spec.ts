@@ -1,3 +1,4 @@
+import { expect, test } from 'vitest'
 import * as string from '../../src/string/snip'
 
 

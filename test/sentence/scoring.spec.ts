@@ -1,3 +1,4 @@
+import { expect, test } from 'vitest'
 import { Idiom } from '../../src/idiom'
 import * as scoring from '../../src/sentence/scoring'
 import * as sample from '../params/sample'
@@ -60,7 +61,7 @@ const length = {
 	params: sample.params('length', sample.LONG),
 	test: (params: sample.Params) => {
 		const [tag, doc] = params
-		const {idealSentenceLength: idealLength} = DEFAULT_IDIOM
+		const { idealSentenceLength: idealLength } = DEFAULT_IDIOM
 
 		doc.sentences.forEach((sent, idx) => {
 			test(`${tag}/${idx}`, () => {

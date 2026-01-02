@@ -1,3 +1,4 @@
+import { expect, test } from 'vitest'
 import * as idiom from '../../src/idiom/Idiom'
 
 const CUSTOM: idiom.IdiomOptions = {
@@ -14,14 +15,14 @@ const init = (keys: string[]): [idiom.Idiom, idiom.IdiomOptions] => {
 	const params: idiom.IdiomOptions = keys.
 		filter((key) => !!key).
 		reduce(
-		(params, key) => {
-			// @ts-ignore
-			params[key] = CUSTOM[key]
+			(params, key) => {
+				// @ts-ignore
+				params[key] = CUSTOM[key]
 
-			return params
-		},
-		{}
-	)
+				return params
+			},
+			{}
+		)
 
 	const actual = new idiom.Idiom(params)
 	const expected = Object.assign({}, idiom.DEFAULTS, params)
@@ -30,19 +31,19 @@ const init = (keys: string[]): [idiom.Idiom, idiom.IdiomOptions] => {
 }
 
 [''].
-concat(Object.keys(CUSTOM)).
-forEach((key) => {
-	const testName = (key.length) ? key : '(none)'
-	test(`option: ${testName}`, () => {
-		const [actual, expected] = init([key])
+	concat(Object.keys(CUSTOM)).
+	forEach((key) => {
+		const testName = (key.length) ? key : '(none)'
+		test(`option: ${testName}`, () => {
+			const [actual, expected] = init([key])
 
-		expect(actual.name).toEqual(expected.name)
-		expect(actual.tag).toEqual(expected.tag)
-		expect(actual.idealSentenceLength).
-			toEqual(expected.idealSentenceLength)
-		expect(actual.minimumKeywordRank).toEqual(expected.minimumKeywordRank)
-		expect(actual.positionScores).toEqual(expected.positionScores)
-		expect(actual.stopWords).toEqual(expected.stopWords)
-		expect(actual.stem('camping')).toEqual(expected.stem!('camping'))
+			expect(actual.name).toEqual(expected.name)
+			expect(actual.tag).toEqual(expected.tag)
+			expect(actual.idealSentenceLength).
+				toEqual(expected.idealSentenceLength)
+			expect(actual.minimumKeywordRank).toEqual(expected.minimumKeywordRank)
+			expect(actual.positionScores).toEqual(expected.positionScores)
+			expect(actual.stopWords).toEqual(expected.stopWords)
+			expect(actual.stem('camping')).toEqual(expected.stem!('camping'))
+		})
 	})
-})
