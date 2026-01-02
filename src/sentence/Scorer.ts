@@ -2,8 +2,8 @@ import filter from '../filter'
 import { Idiom } from '../idiom'
 import { snip } from '../string'
 import { words } from '../tokenize'
-import * as scoring from './scoring'
 import { SentenceSubscores } from './Score'
+import * as scoring from './scoring'
 import { Sentence } from './Sentence'
 
 
@@ -24,7 +24,7 @@ export class Scorer {
 		const position = 0
 		const title = 0
 
-		return {dbs, sbs, length, position, title}
+		return { dbs, sbs, length, position, title }
 	}
 
 	stemText(text: string) {
@@ -122,7 +122,7 @@ export class Scorer {
 		catch (e) {
 			throw new Error([
 				`error scoring sentence '${snip(this.text)}': `,
-				e.toString()
+				(e as Error).toString()
 			].join(' '));
 		}
 	}
