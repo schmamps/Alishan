@@ -1,26 +1,23 @@
 {
-  "name": "alishan",
-  "description": "TypeScript implementation of OolongT",
-  "author": {
-    "name": "Champs"
-  },
-  "version": "1.101.3",
-  "scripts": {
-    "build": "clear && rollup -c",
-    "test": "clear && jest"
-  },
-  "type": "module",
-  "devDependencies": {
-    "@rollup/plugin-typescript": "^3.0.0",
-    "@types/jest": "^26.0.0",
-    "fs": "^0.0.1-security",
-    "jest": "^26.0.0",
-    "jest-cli": "^26.0.0",
-    "rollup": "^2.79.2",
-    "rollup-plugin-terser": "^5.2.0",
-    "ts-jest": "^26.0.0",
-    "ts-polyfill": "^3.7.4",
-    "tslib": "^1.10.0",
-    "typescript": "^3.7.5"
-  }
+	"name": "alishan",
+	"description": "TypeScript implementation of OolongT",
+	"author": {
+		"name": "Champs"
+	},
+	"version": "1.102.0",
+	"scripts": {
+		"build": "clear && rollup -c",
+		"test": "clear && vitest"
+	},
+	"type": "module",
+	"devDependencies": {
+		"@rollup/plugin-terser": "^0.4.4",
+		"@rollup/plugin-typescript": "^12.3.0",
+		"fs": "^0.0.1-security",
+		"rollup": "^4.54.0",
+		"ts-polyfill": "^3.7.4",
+		"tslib": "^2.8.1",
+		"typescript": "^5.9.3",
+		"vitest": "^4.0.16"
+	}
 }
