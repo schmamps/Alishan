@@ -1,19 +1,10 @@
 {
-	"root": true,
-	"parserOptions": {
-		"ecmaVersion": 8,
-		"sourceType": "module"
-	},
-	"env": {
-		"browser": true,
-		"node": true,
-		"es6": true
-	},
-	"globals": {
-		"alishan": true
-	},
-	"plugins": [],
-	"rules": {
+	"root"         : true,
+	"parserOptions": {"ecmaVersion": 8, "sourceType": "module"},
+	"env"          : {"browser": true, "node": true, "es6": true},
+	"globals"      : {"alishan": true},
+	"plugins"      : [],
+	"rules"        : {
 		"accessor-pairs": 0,
 		"block-scoped-var": 0,
 		"complexity": 0,
@@ -102,9 +93,7 @@
 		"strict": [2, "global"],
 		"array-bracket-spacing": 0,
 		"block-spacing": 0,
-		"brace-style": [0, "1tbs", {
-			"allowSingleLine": true
-		}],
+		"brace-style": [ 0, "1tbs", {"allowSingleLine": true} ],
 		"camelcase": 2,
 		"comma-spacing": 0,
 		"comma-style": 0,
@@ -117,10 +106,7 @@
 		"id-match": 0,
 		"indent": ["error", "tab"],
 		"jsx-quotes": 0,
-		"key-spacing": [2, {
-			"beforeColon": false,
-			"afterColon": true
-		}],
+		"key-spacing": [ 2, {"beforeColon": false, "afterColon": true} ],
 		"linebreak-style": 0,
 		"lines-around-comment": 0,
 		"max-depth": 0,
